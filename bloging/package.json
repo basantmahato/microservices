@@ -1,0 +1,22 @@
+{
+  "name": "microservices-architecture",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Starter microservices architecture with main backend, auth service, and blog service.",
+  "scripts": {
+    "install:all": "npm install --workspaces",
+    "dev": "concurrently \"npm run dev -w main-backend\" \"npm run dev -w auth-service\" \"npm run dev -w blog-service\" \"npm run dev -w client\"",
+    "dev:backend": "concurrently \"npm run dev -w main-backend\" \"npm run dev -w auth-service\" \"npm run dev -w blog-service\"",
+    "dev:main": "npm run dev -w main-backend",
+    "dev:auth": "npm run dev -w auth-service",
+    "dev:blog": "npm run dev -w blog-service",
+    "dev:client": "npm run dev -w client"
+  },
+  "workspaces": [
+    "services/*",
+    "client"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
