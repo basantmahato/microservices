@@ -1,4 +1,58 @@
 services:
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000}
+    container_name: microservices-client
+    environment:
+      CLIENT_PORT: 5173
+    ports:
+      - "${CLIENT_PORT:-5173}:5173"
+    depends_on:
+      - main-backend
+
+  main-backend:
+    build:
+      context: ./services/main-backend
+    container_name: microservices-main-backend
+    environment:
+      MAIN_BACKEND_PORT: 3000
+      AUTH_SERVICE_URL: http://auth-service:3001
+      BLOG_SERVICE_URL: http://blog-service:3002
+    ports:
+      - "${MAIN_BACKEND_PORT:-3000}:3000"
+    depends_on:
+      - auth-service
+      - blog-service
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+    container_name: microservices-auth-service
+    environment:
+      AUTH_SERVICE_PORT: 3001
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-auth_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-auth_password}
+      POSTGRES_DB: ${POSTGRES_DB:-auth_db}
+      JWT_SECRET: ${JWT_SECRET:-replace-this-secret}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  blog-service:
+    build:
+      context: ./services/blog-service
+    container_name: microservices-blog-service
+    environment:
+      BLOG_SERVICE_PORT: 3002
+      MONGO_URI: mongodb://mongo:27017/${MONGO_DATABASE:-blog_db}
+    depends_on:
+      mongo:
+        condition: service_healthy
+
   postgres:
     image: postgres:16-alpine
     container_name: microservices-auth-postgres

@@ -5,8 +5,8 @@ const { Pool } = pg;
 export const pool = new Pool({
   host: process.env.POSTGRES_HOST || "localhost",
   port: Number(process.env.POSTGRES_PORT || 5432),
-  user: process.env.POSTGRES_USER || "auth_user",
-  password: process.env.POSTGRES_PASSWORD || "auth_password",
+  user: process.env.POSTGRES_USER || "postgres",
+  password: process.env.POSTGRES_PASSWORD || "root",
   database: process.env.POSTGRES_DB || "auth_db"
 });
 
